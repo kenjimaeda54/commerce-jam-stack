@@ -1,21 +1,38 @@
-import AppBar from "@mui/material/AppBar"
-import Toolbar from "@mui/material/Toolbar"
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
-import IconButton from "@mui/material/IconButton"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
-import React from "react"
-import account from "../../images/account-header.svg"
-import cart from "../../images/cart.svg"
-import search from "../../images/search.svg"
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import React from 'react';
+import account from '../../images/account-header.svg';
+import cart from '../../images/cart.svg';
+import search from '../../images/search.svg';
 
-const fontFamilyTabs = {
-  fontFamily: "Montserrat",
-  fontWeight: 400,
+interface HeaderProps {
+  nodes: Nodes[];
 }
 
-export default function Header() {
+type Nodes = {
+  name: string;
+  strapiId: string;
+};
+
+export default function Header({ nodes }: HeaderProps) {
+  const contactUs = {
+    name: 'Contact Us',
+    strapiId: '343contactUs',
+  };
+
+  const fontTabs = {
+    fontFamily: 'Montserrat',
+    fontWeight: 400,
+    textTransform: 'uppercase',
+  };
+
+  const navigation = [...nodes, contactUs];
+
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
@@ -24,14 +41,19 @@ export default function Header() {
         </Button>
         <Tabs
           sx={{
-            marginLeft: "auto",
-            marginRight: "auto",
+            marginLeft: 'auto',
+            marginRight: 'auto',
           }}
+          value={0}
         >
-          <Tab sx={fontFamilyTabs} label="HATS" />
-          <Tab sx={fontFamilyTabs} label="HOODIES" />
-          <Tab sx={fontFamilyTabs} label="SHIRTS" />
-          <Tab sx={fontFamilyTabs} label="CONTACT US" />
+          {navigation.map((it) => (
+            <Tab
+              value={it.strapiId}
+              sx={fontTabs}
+              label={it.name}
+              key={it.strapiId}
+            />
+          ))}
         </Tabs>
         <IconButton>
           <img src={search} alt="search" />
@@ -44,5 +66,5 @@ export default function Header() {
         </IconButton>
       </Toolbar>
     </AppBar>
-  )
+  );
 }
