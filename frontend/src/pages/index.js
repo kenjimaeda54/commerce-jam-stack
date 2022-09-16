@@ -3,10 +3,6 @@ import { Link } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
 import { Typography } from "@mui/material"
 
-const IndexPage = () => (
-  <Typography bgcolor="common.red" variant="h3">
-    Ola home
-  </Typography>
-)
+const IndexPage = () => <h1>Home</h1>
 
 export default IndexPage
