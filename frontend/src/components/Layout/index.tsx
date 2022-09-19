@@ -1,12 +1,12 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Fragment } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import Header from '../Header';
 
 interface LayoutProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
-const query = graphql`
+const query = graphql `
   query {
     allStrapiCategory {
       nodes {
@@ -18,14 +18,14 @@ const query = graphql`
 `;
 
 export default function Layout({ children }: LayoutProps) {
-  const {
-    allStrapiCategory: { nodes },
-  } = useStaticQuery(query);
+    const {
+        allStrapiCategory: { nodes },
+    } = useStaticQuery(query);
 
-  return (
-    <>
-      <Header nodes={nodes} />
-      {children}
-    </>
-  );
+    return (
+        <Fragment>
+            <Header nodes={nodes} /> 
+            { children } 
+        </Fragment>
+    );
 }

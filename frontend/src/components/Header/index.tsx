@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { Link } from 'gatsby';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Tabs from '@mui/material/Tabs';
@@ -5,10 +7,16 @@ import Tab from '@mui/material/Tab';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import List from '@mui/material/List';
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import account from '../../images/account-header.svg';
 import cart from '../../images/cart.svg';
 import search from '../../images/search.svg';
+import menu from '../../images/menu.svg';
 
 interface HeaderProps {
   nodes: Nodes[];
@@ -20,6 +28,13 @@ type Nodes = {
 };
 
 export default function Header({ nodes }: HeaderProps) {
+  const theme = useTheme();
+  const match = useMediaQuery(theme.breakpoints.down('md'));
+  const [isClose, setIsClose] = useState(false);
+  const iOS =
+    typeof navigator !== undefined &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent);
+
   const contactUs = {
     name: 'Contact Us',
     strapiId: '343contactUs',
@@ -27,11 +42,33 @@ export default function Header({ nodes }: HeaderProps) {
 
   const fontTabs = {
     fontFamily: 'Montserrat',
-    fontWeight: 400,
+    fontWeight: 600,
     textTransform: 'uppercase',
   };
 
+  const navigationLink = [
+    { id: 1, img: search, alt: 'search', navigate: '', visible: true },
+    { id: 2, img: cart, alt: 'cart', navigate: '/cart', visible: true },
+    {
+      id: 3,
+      img: account,
+      alt: 'account',
+      navigate: '/account',
+      visible: !match,
+    },
+    {
+      id: 4,
+      img: menu,
+      navigate: '',
+      alt: 'menu',
+      visible: match,
+      onClick: () => handleSwipeableDrawer(),
+    },
+  ];
+
   const navigation = [...nodes, contactUs];
+
+  const handleSwipeableDrawer = () => setIsClose((old) => !old);
 
   return (
     <AppBar color="transparent" elevation={0}>
@@ -55,16 +92,36 @@ export default function Header({ nodes }: HeaderProps) {
             />
           ))}
         </Tabs>
-        <IconButton>
-          <img src={search} alt="search" />
-        </IconButton>
-        <IconButton>
-          <img src={cart} alt="cart" />
-        </IconButton>
-        <IconButton>
-          <img src={account} alt="account" />
-        </IconButton>
+        {navigationLink.map((it) => {
+          if (it.visible) {
+            return (
+              <IconButton
+                onClick={it.onClick}
+                to={it.navigate}
+                component={Link}
+                key={it.id}
+              >
+                <img src={it.img} alt={it.alt} />
+              </IconButton>
+            );
+          }
+        })}
       </Toolbar>
+      <SwipeableDrawer
+        open={isClose}
+        onClose={handleSwipeableDrawer}
+        onOpen={handleSwipeableDrawer}
+        disableBackdropTransition={!iOS}
+        disableDiscovery={iOS}
+      >
+        <List>
+          {navigation.map((it) => (
+            <ListItem key={it.strapiId}>
+              <ListItemText primary={it.name} />
+            </ListItem>
+          ))}
+        </List>
+      </SwipeableDrawer>
     </AppBar>
   );
 }
